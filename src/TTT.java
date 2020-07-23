@@ -26,15 +26,15 @@ public class TTT{
     }
     public static int[] convert_Move(int move){
         switch(move){
-            case 1: return (new int[] {0,0});
-            case 2: return (new int[] {0,1});
-            case 3: return (new int[] {0,2});
-            case 4: return (new int[] {1,0});
-            case 5: return (new int[] {1,1});
-            case 6: return (new int[] {1,2});
-            case 7: return (new int[] {2,0});
-            case 8: return (new int[] {2,1});
-            case 9: return (new int[] {2,2});
+            case 0: return (new int[] {0,0});
+            case 1: return (new int[] {0,1});
+            case 2: return (new int[] {0,2});
+            case 3: return (new int[] {1,0});
+            case 4: return (new int[] {1,1});
+            case 5: return (new int[] {1,2});
+            case 6: return (new int[] {2,0});
+            case 7: return (new int[] {2,1});
+            case 8: return (new int[] {2,2});
         } return new int[] {0,0};
     }
 
@@ -45,7 +45,9 @@ public class TTT{
             Scanner input = new Scanner(System.in);
             int i = input.nextInt();
             move = convert_Move(i);
-            board.set_Move(move, 'X');
+            if (board.set_Move(move, 'X')){
+                ;
+            } else {get_Move(board, userTurn);}
         } else{ //AI move
             System.out.println("Opponent is deciding");
             move = bot_Move(board);
@@ -55,22 +57,25 @@ public class TTT{
     public static int[] bot_Move(Board board){
         double bestScore = Double.NEGATIVE_INFINITY;
         int [] move = new int[2];
+        int [] bestMove = new int[2];
         for (int i = 0; i < 9; i++){
+            System.out.println(i);
             move = convert_Move(i);
             if (board.set_Move(move,'O')){
-                double score = miniMax(board, 0, false);
-                board.set_Move(move, (char)(i+48+1));
+                double score = miniMax(board, 0, true);
+                board.reset_Move(move, i);
                 if (score > bestScore)
                     bestScore = score;
+                    bestMove = move;
             }
         }
-        board.set_Move(move,'O');
+        board.set_Move(bestMove,'O');
         return move;
     }
     public static double miniMax(Board board, int depth, boolean userTurn){
         int[] move = new int[2];
-        if (check_Win(board, 'O')) return 10; //O wins
-        if (check_Win(board, 'X')) return -10;//X wins
+        if (check_Win(board, 'O')) return 1; //O wins
+        if (check_Win(board, 'X')) return -1;//X wins
         if (board.full_Board()) return 0;//Tie
         //Maximizing turn (AI)
         if (userTurn){
@@ -78,33 +83,46 @@ public class TTT{
             for (int i = 0; i < 9; i++){
                 move = convert_Move(i);
                 if (board.set_Move(move, 'O')){
-                    double score = miniMax(board, depth+1, false);
-                    board.set_Move(move, (char)(i+48+1));
+                    double score = miniMax(board, depth+1, true);
+                    board.reset_Move(move, i);
                     if (score > bestScore)
                         bestScore = score;
                 }
-            } return bestScore - depth;
+            } return bestScore;
         } else {
             double bestScore = Double.POSITIVE_INFINITY;
             for (int i = 0; i < 9; i++){
                 move = convert_Move(i);
                 if (board.set_Move(move, 'X')){
-                    double score = miniMax(board, depth+1, true);
-                    board.set_Move(move, (char)(i+48+1));
-                    if (score > bestScore)
+                    double score = miniMax(board, depth+1, false);
+                    board.reset_Move(move, i);
+                    if (score < bestScore)
                         bestScore = score;
                 }
-            } return bestScore - depth;
+            } return bestScore;
         }
     }
     public static void main(String[] args){
         Board TTT = new Board();
         TTT.display();
         boolean userTurn = goes_First();
-        while (!check_Win(TTT,'O') && !check_Win(TTT, 'X') && !TTT.full_Board()){
+        System.out.println(userTurn);
+        /*
+        TTT.set_Move(new int[] {0,0}, 'X');
+        TTT.set_Move(new int[] {0,1}, 'O');
+        TTT.set_Move(new int[] {0,2}, 'X');
+        TTT.set_Move(new int[] {1,0}, 'X');
+        TTT.set_Move(new int[] {1,1}, 'O');
+        TTT.set_Move(new int[] {1,2}, 'O');
+        TTT.set_Move(new int[] {2,0}, 'O');
+        TTT.set_Move(new int[] {2,1}, 'X');
+        */
+        TTT.display();
+        while (!check_Win(TTT,'O') && !check_Win(TTT, 'X') && !TTT.full_Board()) {
             TTT = get_Move(TTT, userTurn);
             userTurn = change_Turn(userTurn);
             TTT.display();
         }
+        TTT.display();
     }
 }

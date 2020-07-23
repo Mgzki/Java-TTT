@@ -18,9 +18,12 @@ public class Board {
             board[move[0]][move[1]] = player;
             return true;
         } else {
-            System.out.println("Invalid move");
+            //System.out.println("Invalid move");
             return false;
         }
+    }
+    public void reset_Move(int[]move, int reset){
+        board[move[0]][move[1]] = (char)(reset + 48);
     }
     //Gets the current value from a position on the board
     public char get_Move(int [] move){
@@ -28,7 +31,7 @@ public class Board {
     }
     //Checks if the cell is free
     public boolean cell_Free(int[] move){
-        return (board[move[0]][move[1]] != 'X' || board[move[0]][move[1]] != 'O');
+        return (board[move[0]][move[1]] != 'X' && board[move[0]][move[1]] != 'O');
     }
     /*Checks if there are any available moves
      *Used for tie checking in Tic Tac Toe
