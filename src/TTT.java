@@ -64,9 +64,13 @@ public class TTT{
             if (board.set_Move(move,'O')){
                 double score = miniMax(board, 0, false);
                 board.reset_Move(move, i);
-                if (score > bestScore)
+                System.out.print(score >= bestScore);
+                System.out.print(score);
+                System.out.println(bestScore);
+                if (score > bestScore) {
                     bestScore = score;
                     bestMove = move;
+                }
             }
         }
         board.set_Move(bestMove,'O');
@@ -88,7 +92,9 @@ public class TTT{
                     if (score > bestScore)
                         bestScore = score;
                 }
-            } return bestScore;
+            }
+            //board.set_Move(move,'O');
+            return bestScore;
         } else {
             double bestScore = Double.POSITIVE_INFINITY;
             for (int i = 0; i < 9; i++){
@@ -99,7 +105,8 @@ public class TTT{
                     if (score < bestScore)
                         bestScore = score;
                 }
-            } return bestScore;
+            }
+            return bestScore;
         }
     }
     public static void main(String[] args){
