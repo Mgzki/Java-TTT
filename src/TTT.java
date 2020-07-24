@@ -26,15 +26,15 @@ public class TTT{
     }
     public static int[] convert_Move(int move){
         switch(move){
-            case 0: return (new int[] {0,0});
-            case 1: return (new int[] {0,1});
-            case 2: return (new int[] {0,2});
-            case 3: return (new int[] {1,0});
-            case 4: return (new int[] {1,1});
-            case 5: return (new int[] {1,2});
-            case 6: return (new int[] {2,0});
-            case 7: return (new int[] {2,1});
-            case 8: return (new int[] {2,2});
+            case 1: return (new int[] {0,0});
+            case 2: return (new int[] {0,1});
+            case 3: return (new int[] {0,2});
+            case 4: return (new int[] {1,0});
+            case 5: return (new int[] {1,1});
+            case 6: return (new int[] {1,2});
+            case 7: return (new int[] {2,0});
+            case 8: return (new int[] {2,1});
+            case 9: return (new int[] {2,2});
         } return new int[] {0,0};
     }
 
@@ -50,19 +50,19 @@ public class TTT{
             } else {get_Move(board, userTurn);}
         } else{ //AI move
             System.out.println("Opponent is deciding");
-            move = bot_Move(board);
+            board = bot_Move(board);
+            //board.set_Move(move, 'O');
         }
         return board;
     }
-    public static int[] bot_Move(Board board){
+    public static Board bot_Move(Board board){
         double bestScore = Double.NEGATIVE_INFINITY;
         int [] move = new int[2];
         int [] bestMove = new int[2];
         for (int i = 0; i < 9; i++){
-            System.out.println(i);
-            move = convert_Move(i);
+            move = convert_Move(i+1);
             if (board.set_Move(move,'O')){
-                double score = miniMax(board, 0, true);
+                double score = miniMax(board, 0, false);
                 board.reset_Move(move, i);
                 if (score > bestScore)
                     bestScore = score;
@@ -70,7 +70,7 @@ public class TTT{
             }
         }
         board.set_Move(bestMove,'O');
-        return move;
+        return board;
     }
     public static double miniMax(Board board, int depth, boolean userTurn){
         int[] move = new int[2];
@@ -81,9 +81,9 @@ public class TTT{
         if (userTurn){
             double bestScore = Double.NEGATIVE_INFINITY;
             for (int i = 0; i < 9; i++){
-                move = convert_Move(i);
+                move = convert_Move(i+1);
                 if (board.set_Move(move, 'O')){
-                    double score = miniMax(board, depth+1, true);
+                    double score = miniMax(board, depth+1, false);
                     board.reset_Move(move, i);
                     if (score > bestScore)
                         bestScore = score;
@@ -92,9 +92,9 @@ public class TTT{
         } else {
             double bestScore = Double.POSITIVE_INFINITY;
             for (int i = 0; i < 9; i++){
-                move = convert_Move(i);
+                move = convert_Move(i+1);
                 if (board.set_Move(move, 'X')){
-                    double score = miniMax(board, depth+1, false);
+                    double score = miniMax(board, depth+1, true);
                     board.reset_Move(move, i);
                     if (score < bestScore)
                         bestScore = score;
@@ -106,18 +106,6 @@ public class TTT{
         Board TTT = new Board();
         TTT.display();
         boolean userTurn = goes_First();
-        System.out.println(userTurn);
-        /*
-        TTT.set_Move(new int[] {0,0}, 'X');
-        TTT.set_Move(new int[] {0,1}, 'O');
-        TTT.set_Move(new int[] {0,2}, 'X');
-        TTT.set_Move(new int[] {1,0}, 'X');
-        TTT.set_Move(new int[] {1,1}, 'O');
-        TTT.set_Move(new int[] {1,2}, 'O');
-        TTT.set_Move(new int[] {2,0}, 'O');
-        TTT.set_Move(new int[] {2,1}, 'X');
-        */
-        TTT.display();
         while (!check_Win(TTT,'O') && !check_Win(TTT, 'X') && !TTT.full_Board()) {
             TTT = get_Move(TTT, userTurn);
             userTurn = change_Turn(userTurn);
