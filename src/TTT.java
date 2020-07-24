@@ -51,7 +51,6 @@ public class TTT{
         } else{ //AI move
             System.out.println("Opponent is deciding");
             board = bot_Move(board);
-            //board.set_Move(move, 'O');
         }
         return board;
     }
@@ -64,9 +63,6 @@ public class TTT{
             if (board.set_Move(move,'O')){
                 double score = miniMax(board, 0, false);
                 board.reset_Move(move, i);
-                System.out.print(score >= bestScore);
-                System.out.print(score);
-                System.out.println(bestScore);
                 if (score > bestScore) {
                     bestScore = score;
                     bestMove = move;
@@ -93,7 +89,6 @@ public class TTT{
                         bestScore = score;
                 }
             }
-            //board.set_Move(move,'O');
             return bestScore;
         } else {
             double bestScore = Double.POSITIVE_INFINITY;
@@ -119,5 +114,8 @@ public class TTT{
             TTT.display();
         }
         TTT.display();
+        if (check_Win(TTT, 'O')) System.out.println("Computer wins!");
+        if (check_Win(TTT, 'X')) System.out.println("You win!");
+        if (TTT.full_Board()) System.out.println("Tie game");
     }
 }
